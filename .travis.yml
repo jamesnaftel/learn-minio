@@ -1,0 +1,15 @@
+language: go
+
+env:
+  - GO111MODULES=on
+
+go:
+  - 1.12.x
+
+before_script:
+  - go install github.com/golangci/golangci-lint/cmd/golangci-lint
+
+script:
+  - golangci-lint run
+  - go test -v -race ./...
+

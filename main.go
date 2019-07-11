@@ -19,9 +19,12 @@ func main() {
 
 	minioClient, err := NewClient(*host, *accessKeyID, *secretAccessKey, *secure)
 	if err != nil {
-		log.Fatalf("Failed to create client: %v\n", err)
+		log.Fatalf("Failed to create client: %v", err)
 	}
-	MakeBucket(minioClient, *bucketName, *bucketLocation)
+	err = MakeBucket(minioClient, *bucketName, *bucketLocation)
+	if err != nil {
+		log.Fatalf("Failed to make bucket: %v", err)
+	}
 
 }
 

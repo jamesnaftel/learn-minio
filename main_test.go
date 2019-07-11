@@ -28,7 +28,10 @@ func TestMakeBucket(t *testing.T) {
 		}
 
 		if test.deleteBucket {
-			minioClient.RemoveBucket(test.name)
+			err = minioClient.RemoveBucket(test.name)
+			if err != nil {
+				t.Log("RemoveBucket failed")
+			}
 		}
 	}
 }

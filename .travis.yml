@@ -13,12 +13,7 @@ before_script:
   # linters
   - go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
   # test setup
-  - docker pull minio/minio
-  - >
-    docker run -d --rm -p 9000:9000 --name minio1
-      -e "MINIO_ACCESS_KEY=minio"
-      -e "MINIO_SECRET_KEY=minio123"
-      minio/minio:latest server /data
+  - make dev
 
 
 script:

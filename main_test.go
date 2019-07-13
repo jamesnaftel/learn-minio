@@ -1,6 +1,9 @@
 package main
 
 import (
+	"io/ioutil"
+	"strconv"
+	"strings"
 	"testing"
 
 	minio "github.com/minio/minio-go/v6"
@@ -36,8 +39,8 @@ func TestMakeBucket(t *testing.T) {
 	}
 }
 
-// TestMakeBucketError tests the logic around MakeBucket and BucketExists
-// MakeBucket uses a strict naming path in minio while BucketExists does not.
+// TestMakeBucketError tests the t *testing.Tlogic around MakeBucket and BucketExists
+// MakeBucket uses a strict namint *testing.Tg path in minio while BucketExists does not.
 // To ensure both paths are tested, there is a strict path error using the
 // "_" and a non strict error using less than 3 characters
 func TestMakeBucketError(t *testing.T) {
@@ -56,6 +59,45 @@ func TestMakeBucketError(t *testing.T) {
 			t.Fatalf("TestMakeBucketError failed for bucketname:  %s\n", bucketName)
 		}
 	}
+}
+
+// TestAddObject test adding objects to the store
+func TestAddObject(t *testing.T) {
+	err := addFiles(10, "tempbucket")
+	if err != nil {
+		t.Fatalf("TestAddobject error: %v\n", err)
+	}
+}
+
+// addFiles addes x number of files to bucket
+func addFiles(x int, bucketName string) error {
+	minioClient, err := setup()
+	if err != nil {
+		return err
+	}
+
+	err = MakeBucket(minioClient, bucketName, "us-east-1")
+	if err != nil {
+		return err
+	}
+
+	//fileObjects := createObjects()
+
+	for i := 0; i < x; i++ {
+
+		data := strings.Repeat(string(i), 4)
+
+		_, err := minioClient.PutObject(bucketName,
+			"file"+strconv.Itoa(i),
+			ioutil.NopCloser(strings.NewReader(data)),
+			int64(len(data)),
+			minio.PutObjectOptions{})
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func setup() (*minio.Client, error) {
